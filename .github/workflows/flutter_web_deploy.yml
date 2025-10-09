@@ -33,3 +33,5 @@ jobs:
           publish_dir: build/web
           publish_branch: gh-pages  # explicitly specify branch
           force_orphan: true        # create branch if not exist
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
