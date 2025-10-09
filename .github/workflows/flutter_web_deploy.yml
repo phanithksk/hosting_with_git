@@ -18,7 +18,7 @@ jobs:
 
       - run: flutter config --enable-web
       - run: flutter pub get
-      - run: flutter build web --release --base-href=/project/
+      - run: flutter build web --release --base-href=/hosting_with_git/
 
       - name: Deploy to Production
         uses: peaceiris/actions-gh-pages@v3
