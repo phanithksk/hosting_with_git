@@ -1,0 +1,28 @@
+name: Flutter Web CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+      - 'feature/**'   # run CI for all feature branches
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.4'
+
+      - run: flutter pub get
+
+      - name: Run unit & widget tests
+        run: flutter test --coverage
+
+      - name: Run build check (optional)
+        run: flutter build web --release --no-sound-null-safety

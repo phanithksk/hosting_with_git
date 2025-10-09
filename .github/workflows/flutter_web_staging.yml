@@ -1,8 +1,8 @@
-name: Flutter Web Production Deployment
+name: Flutter Web Staging Deployment
 
 on:
   push:
-    branches: [ main ]
+    branches: [ develop ]
 
 jobs:
   build:
@@ -18,14 +18,14 @@ jobs:
 
       - run: flutter config --enable-web
       - run: flutter pub get
-      - run: flutter build web --release --base-href=/project/
+      - run: flutter build web --release --base-href=/project-staging/
 
-      - name: Deploy to Production
+      - name: Deploy to Staging
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build/web
-          publish_branch: gh-pages
+          publish_branch: gh-pages-staging
           force_orphan: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
