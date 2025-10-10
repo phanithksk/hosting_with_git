@@ -24,5 +24,5 @@ jobs:
       - name: Run unit & widget tests
         run: flutter test --coverage
 
-      - name: Run build check (optional)
+      - name: Run build check 
         run: flutter build web --release --no-sound-null-safety
