@@ -18,7 +18,7 @@ class WelcomeScreen extends StatelessWidget {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                Get.toNamed('/signin');
+                Get.toNamed('/list_project');
               },
               child: const Text('Sign In'),
             ),

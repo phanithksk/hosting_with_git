@@ -1,11 +1,11 @@
-name: Flutter Web Staging Deployment
+name: Flutter Staging Build (Web + Android + iOS)
 
 on:
   push:
     branches: [ develop ]
 
 jobs:
-  build:
+  test_and_android_web_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,9 +18,17 @@ jobs:
 
       - run: flutter config --enable-web
       - run: flutter pub get
-      - run: flutter build web --release --base-href=/project-staging/
 
-      - name: Deploy to Staging
+      # ✅ Run unit + widget tests
+      - name: Run Tests
+        run: flutter test
+
+      # ✅ Build Web
+      - name: Build Web
+        run: flutter build web --release --base-href=/project-staging/
+
+      # ✅ Deploy Web to Staging (GitHub Pages)
+      - name: Deploy to Staging (Web)
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -29,3 +37,39 @@ jobs:
           force_orphan: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
+
+      # ✅ Build Android APK
+      - name: Build Android APK (release)
+        run: flutter build apk --release
+
+      # ✅ Upload Android APK artifact (optional, useful for download/testing)
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  ios_build:
+    runs-on: macos-latest
+    needs: test_and_android_web_build   # Wait until tests and Android/Web build pass
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.4'
+
+      - run: flutter pub get
+
+      # ✅ Build iOS (no signing)
+      - name: Build iOS (release - no code signing)
+        run: flutter build ios --release --no-codesign
+
+      # ✅ Upload iOS artifact (.app)
+      - name: Upload iOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-app
+          path: build/ios/iphoneos/*.app
